@@ -1,0 +1,6 @@
+RPi.GPIO
+picamera2
+smbus2
+pynmea2
+pyserial
+opencv-python
