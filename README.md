@@ -1,41 +1,33 @@
 # Smart Navigation Robot — V2V Autonomous System
 
-> **Status: In Progress** — Robot 1 built and functional. Robot 2 ~40% complete.
+> **Status: In Progress** — Robot 1 operational as an obstacle-avoiding robot. Robot 2 partially assembled, wiring in progress.
 
-Two Raspberry Pi 4 robots that navigate autonomously and communicate with each other over WiFi in real time, demonstrating Vehicle-to-Vehicle (V2V) communication. The core idea mirrors what self-driving car research teams are working on: multiple agents sharing sensor data and making coordinated movement decisions without any human input.
+Two Raspberry Pi 4 robots designed to navigate autonomously and communicate with each other over WiFi in real time, demonstrating a small-scale version of Vehicle-to-Vehicle (V2V) communication. The long-term goal is a working demo where two robots detect each other, coordinate who stops and who moves, and navigate around each other without any human input.
 
 ---
 
-## How It Works
+## Why I Built This
 
-Each robot runs a continuous control loop that fuses data from four sensors, plans a path, and broadcasts its state to the other robot 20 times per second over UDP.
+I was watching the news one evening and saw a report about two soccer players who were killed in a car accident at an intersection. It stuck with me. Later, scrolling through social media on an anniversary of the release of Fast and Furious, I came across posts about Paul Walker and how he died in a car crash. Two separate moments, same thought: these deaths were preventable.
 
-### Sensor Fusion
+I started looking at what Tesla and other companies were doing with autonomous vehicles and the idea clicked. If every car on the road could sense its surroundings and communicate its position and speed to the cars around it in real time, intersection collisions like those would not happen. The car would know another vehicle was coming before any human could react.
 
-| Sensor | Role |
-|--------|------|
-| HC-SR04 + SG90 Servo | Scans left and right to measure clearance on each side |
-| Pi Camera Module 2 | Visual obstacle detection via OpenCV |
-| MPU-6050 IMU | Tracks heading angle so turns are precise, not guessed |
-| NEO-6M GPS | Broadcasts real-world coordinates over V2V |
+That led me further. If roads were fully autonomous, you would not need lanes as wide or as many of them, because the cars would coordinate tightly and safely. Narrower roads mean less pavement, less land use, less heat absorption, less runoff. It connects directly to reducing urban sprawl and lowering carbon emissions. The safety problem and the environmental problem have the same solution.
 
-### Angle-Based Navigation
+This project is my attempt to build a small, working version of that idea. I am a high school student learning as I go, so this is not a finished system. But the concept it is based on is real, the hardware is real, and the problem it points at is real.
 
-Most basic obstacle-avoiding robots turn randomly when they detect something. These robots do not. The ultrasonic sensor sweeps left and right, measures clearance on both sides, and the path planner calculates the optimal turn angle before the robot moves. The IMU then tracks rotation so the robot lands on the correct heading instead of approximating it. This is a meaningful step up from the typical "if obstacle, turn right" logic.
+---
 
-### V2V Communication
+## What It Does
 
-Both robots broadcast a state packet over WiFi UDP at 20Hz containing:
-- Current GPS coordinates
-- Heading angle from the IMU
-- Distance to nearest obstacle from the ultrasonic sensor
-- Robot ID
+### Current State
+Robot 1 is fully assembled and working as a standalone obstacle-avoiding robot. It detects objects in front of it, scans left and right with the ultrasonic sensor on a servo, and turns toward whichever side has more clearance. Robot 2 is partially built with the main components assembled but wiring not yet complete.
 
-When the received packet shows the other robot is within a collision threshold, the lower-priority robot stops and holds position while the other navigates around it. No central coordinator. Each robot makes its own decision based on shared data.
+### The Goal
+The full system has two robots communicating over WiFi using UDP broadcast packets sent 20 times per second. Each packet contains the robot's ID, GPS coordinates, heading angle, and distance to the nearest obstacle. When one robot's data shows the other is close and on a converging path, the lower-priority robot stops while the other navigates around it. No central server, no remote control. Each robot decides on its own based on what it receives.
 
-### The Demo
-
-Two robots drive toward each other from opposite ends of a course. Both are broadcasting state. When V2V data indicates a collision course, one stops. The other calculates a path around it using angle-based navigation and continues. They then resume toward their original headings. This is the same coordination concept used in intersection management research for autonomous vehicles.
+### The Key Navigation Idea
+Most basic obstacle-avoiding robots just turn a fixed amount when they hit something. These robots are designed to scan both sides first, calculate which direction gives the most clearance, and use the IMU to rotate to that specific angle rather than guessing. The goal is navigation that is deliberate rather than random.
 
 ---
 
@@ -45,87 +37,61 @@ Two robots drive toward each other from opposite ends of a course. Both are broa
 
 | Component | Purpose |
 |-----------|---------|
-| Raspberry Pi 4 Model B (4GB) | Main compute + WiFi |
-| Elegoo Robot Car Chassis V4 | Chassis, motors, wheels |
-| L298N Motor Driver | Controls DC motors via GPIO PWM |
-| HC-SR04 Ultrasonic Sensor | Distance measurement |
-| SG90 Servo | Pans ultrasonic sensor left/right |
-| Pi Camera Module 2 | Visual input (CSI ribbon) |
-| MPU-6050 IMU | Gyroscope-based heading tracking |
-| NEO-6M GPS Module | UART-based position data |
-| 3-Channel Line Sensor | Ground/surface detection |
-| LM2596 Buck Converter | Steps battery voltage to 5V for Pi |
-| GeeekPi ICE Tower Fan | Active cooling under sensor load |
-| GPIO Expansion Board (ribbon-cable T-type) | Breaks out GPIO without blocking fan |
+| Raspberry Pi 4 Model B (4GB) | Main compute, runs all Python code, handles WiFi |
+| Elegoo Robot Car Chassis V4 | Chassis, DC motors, wheels |
+| L298N Motor Driver | Controls left and right motors via GPIO PWM signals |
+| HC-SR04 Ultrasonic Sensor | Measures distance to obstacles |
+| SG90 Servo | Pans the ultrasonic sensor left and right to scan |
+| Pi Camera Module 2 | Visual input via CSI ribbon cable |
+| MPU-6050 IMU | Gyroscope and accelerometer for heading tracking |
+| NEO-6M GPS Module | UART-based real-world position data |
+| 3-Channel Line Sensor | Ground surface detection |
+| LM2596 Buck Converter | Steps battery voltage down to stable 5V for the Pi |
+| GeeekPi ICE Tower Fan | Active cooling under continuous sensor load |
+| GPIO Expansion Board (ribbon-cable T-type) | Breaks out GPIO pins without physically blocking the fan |
+
+The ribbon-cable T-type expansion board is a deliberate choice. A stacking GPIO board would conflict with the ICE Tower fan. The ribbon cable solves that without losing any GPIO access.
 
 ---
 
-## Software Architecture
+## Tech Stack
 
-```
-Smart-Navigation-Robot/
-├── config.py          # Pin definitions, robot ID, network settings
-├── motor_control.py   # L298N abstraction (forward, reverse, turn, stop)
-├── ultrasonic.py      # HC-SR04 sweep + clearance measurement
-├── imu.py             # MPU-6050 heading via gyroscope integration
-├── gps_module.py      # NEO-6M UART parsing with pynmea2
-├── camera.py          # Frame capture + OpenCV obstacle detection
-├── v2v_comm.py        # UDP broadcast sender + receiver threads
-├── path_planner.py    # Angle calculation + IMU-guided turn execution
-└── main.py            # Main control loop + V2V coordination logic
-```
+All code runs on **Python 3** on each Raspberry Pi 4. No external servers or cloud services. Everything runs locally on the robots.
 
-All code is Python 3. Each module is independently testable.
+### Libraries
+
+| Library | Purpose |
+|---------|---------|
+| `RPi.GPIO` | Controls GPIO pins for motors, ultrasonic sensor, and servo |
+| `smbus2` | I2C communication with the MPU-6050 IMU |
+| `pyserial` | UART communication with the NEO-6M GPS module |
+| `pynmea2` | Parses NMEA sentences from the GPS into usable coordinates |
+| `picamera2` | Captures frames from the Pi Camera Module 2 |
+| `opencv-python` | Processes camera frames for visual obstacle detection |
+| `socket` | Built-in Python library used for UDP broadcast communication between robots |
+
+### Communication Protocol
+The two robots talk to each other using **UDP broadcast sockets** over the local WiFi network. UDP is used instead of TCP because the priority is speed, not guaranteed delivery. A slightly outdated position packet is better than a delayed one. Each robot sends 20 packets per second and listens for incoming packets on a background thread so communication never blocks the main navigation loop.
 
 ---
 
-## Setup
+## Planned Software Architecture
 
-### 1. Flash OS
+The codebase will be split into focused modules so each component can be tested independently before being integrated.
 
-Use Raspberry Pi Imager. Enable SSH, set hostname to `robot1` or `robot2`, configure WiFi before first boot.
+| File | Responsibility |
+|------|---------------|
+| `config.py` | Pin definitions, robot ID, network settings, tunable constants |
+| `motor_control.py` | L298N abstraction: forward, reverse, turn, stop, speed control |
+| `ultrasonic.py` | HC-SR04 distance reading, servo sweep, clearance measurement |
+| `imu.py` | MPU-6050 heading tracking via gyroscope integration |
+| `gps_module.py` | NEO-6M UART parsing, coordinate output |
+| `camera.py` | Frame capture, OpenCV-based obstacle detection |
+| `v2v_comm.py` | UDP broadcast sender and listener threads |
+| `path_planner.py` | Clearance-based angle calculation, IMU-guided turn execution |
+| `main.py` | Main control loop, sensor fusion, V2V coordination logic |
 
-### 2. Enable Interfaces
-
-```bash
-sudo raspi-config
-```
-
-Enable: Camera, I2C, Serial Port (disable login shell, keep hardware serial), SSH.
-
-### 3. Install Dependencies
-
-```bash
-sudo apt update && sudo apt upgrade -y
-sudo apt install -y python3-pip python3-smbus i2c-tools gpsd gpsd-clients
-pip3 install RPi.GPIO picamera2 smbus2 pynmea2 pyserial opencv-python
-```
-
-### 4. Verify Hardware
-
-```bash
-# MPU-6050 should show up at 0x68
-sudo i2cdetect -y 1
-
-# Camera check
-libcamera-hello --timeout 5000
-
-# GPS — confirm NMEA sentences are coming through
-sudo gpsd /dev/ttyS0 -F /var/run/gpsd.sock
-cgps -s
-```
-
-### 5. Configure
-
-In `config.py`, set:
-- `ROBOT_ID` — `"robot1"` or `"robot2"`
-- `BROADCAST_IP` — your subnet's broadcast address (e.g., `192.168.1.255`)
-
-### 6. Run
-
-```bash
-python3 main.py
-```
+Wiring diagrams and setup instructions will be added as the build progresses.
 
 ---
 
@@ -133,21 +99,24 @@ python3 main.py
 
 | Component | Robot 1 | Robot 2 |
 |-----------|---------|---------|
-| Chassis + motors | Done | Done |
+| Chassis and motors | Done | Done |
 | L298N motor driver | Done | In progress |
-| HC-SR04 + servo | Done | Pending |
+| HC-SR04 + servo mount | Done | Pending |
 | MPU-6050 IMU | Done | Pending |
 | NEO-6M GPS | Done | Pending |
-| Pi Camera | Mounted | Pending |
-| Buck converter + power | Done | In progress |
-| V2V software layer | In progress | — |
-| Angle-based nav | In progress | — |
+| Pi Camera Module 2 | Mounted | Pending |
+| Buck converter and power | Done | In progress |
+| GPIO expansion board | Done | Pending |
+| V2V communication layer | Not started | — |
+| Angle-based navigation | Not started | — |
 
 ---
 
-## Why V2V Matters
+## The Bigger Picture
 
-Vehicle-to-Vehicle communication is an active research area at companies like Waymo and in university autonomous systems labs. The core challenge is the same at any scale: agents need to share state and make decentralized decisions fast enough to avoid collisions. This project is a small, working proof of concept of that architecture — built on commodity hardware with open-source software.
+If roads were fully autonomous, the benefits go beyond just preventing crashes. Vehicles that communicate and coordinate in real time do not need the same buffer space between lanes. Roads could be narrower. Less land cleared for pavement means less heat island effect, less stormwater runoff, and more space left as natural habitat. The safety argument and the environmental argument point at the same solution.
+
+This project is one small step toward understanding how that kind of system works at a fundamental level.
 
 ---
 
