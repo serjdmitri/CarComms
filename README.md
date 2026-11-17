@@ -120,6 +120,7 @@ You need Python 3.9 or newer. Nothing to install.
 ```bash
 git clone https://github.com/serjdmitri/CarComms.git
 cd CarComms
+# until the feature branch is merged into main: git checkout feature/intersection-coordination
 python3 -m unittest discover -s tests -t .      # 57 tests, about 20 s
 python3 -m carcomms simulate                     # one decision log, in the terminal
 python3 -m carcomms udp-demo                     # two real processes, real UDP sockets
@@ -179,7 +180,7 @@ Same arrivals through both policies (wait = reaching the stop line until enterin
 |---|---|---:|---:|---:|
 | Both arrive together, car_b has priority | First-come-first-served | 1.65 | 0.10 | 1.75 |
 | | Priority | **0.10** | 1.65 | 1.75 |
-| Both arrive together, equal priority | Either (id breaks the tie) | 1.65 | 0.10 | 1.75 |
+| Both arrive together, equal priority (columns are car_b / car_a: neither has priority) | Either (id breaks the tie) | 1.65 | 0.10 | 1.75 |
 | Priority car arrives 0.05 s late, slow link (150 ms) | First-come-first-served | 1.90 | 0.30 | 2.20 |
 | | Priority | **0.30** | 2.00 | 2.30 |
 | Priority car arrives 0.5 s late | Either | 1.15 | 0.10 | 1.25 |
