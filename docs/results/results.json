@@ -1,0 +1,271 @@
+{
+  "latency_sweep": [
+    {
+      "contested_arrivals": 0.05,
+      "fcfs": {
+        "other_wait": 0.3735000000000033,
+        "priority_first": 0.524,
+        "priority_wait": 0.34845000000000165,
+        "total_wait": 0.7219500000000024
+      },
+      "latency_s": 0.05,
+      "loss": 0.0,
+      "order_differs": 0.006,
+      "overlaps": 0,
+      "priority": {
+        "other_wait": 0.38280000000000364,
+        "priority_first": 0.53,
+        "priority_wait": 0.33915000000000123,
+        "total_wait": 0.7219500000000024
+      },
+      "trials": 1000,
+      "unfinished": 0,
+      "window_s": 4.0
+    },
+    {
+      "contested_arrivals": 0.078,
+      "fcfs": {
+        "other_wait": 0.4841499999999951,
+        "priority_first": 0.52,
+        "priority_wait": 0.4707999999999946,
+        "total_wait": 0.954949999999994
+      },
+      "latency_s": 0.1,
+      "loss": 0.0,
+      "order_differs": 0.02,
+      "overlaps": 0,
+      "priority": {
+        "other_wait": 0.5160499999999959,
+        "priority_first": 0.54,
+        "priority_wait": 0.43869999999999437,
+        "total_wait": 0.954749999999994
+      },
+      "trials": 1000,
+      "unfinished": 0,
+      "window_s": 4.0
+    },
+    {
+      "contested_arrivals": 0.124,
+      "fcfs": {
+        "other_wait": 0.7172999999999916,
+        "priority_first": 0.518,
+        "priority_wait": 0.7086999999999913,
+        "total_wait": 1.4259999999999915
+      },
+      "latency_s": 0.2,
+      "loss": 0.0,
+      "order_differs": 0.041,
+      "overlaps": 0,
+      "priority": {
+        "other_wait": 0.7873999999999919,
+        "priority_first": 0.559,
+        "priority_wait": 0.6393999999999914,
+        "total_wait": 1.4267999999999919
+      },
+      "trials": 1000,
+      "unfinished": 0,
+      "window_s": 4.0
+    },
+    {
+      "contested_arrivals": 0.221,
+      "fcfs": {
+        "other_wait": 1.200249999999986,
+        "priority_first": 0.515,
+        "priority_wait": 1.199149999999985,
+        "total_wait": 2.399399999999988
+      },
+      "latency_s": 0.4,
+      "loss": 0.0,
+      "order_differs": 0.101,
+      "overlaps": 0,
+      "priority": {
+        "other_wait": 1.3939999999999866,
+        "priority_first": 0.616,
+        "priority_wait": 1.009099999999986,
+        "total_wait": 2.403099999999987
+      },
+      "trials": 1000,
+      "unfinished": 0,
+      "window_s": 4.0
+    }
+  ],
+  "model": {
+    "crossing_s": 1.5,
+    "dt_s": 0.05,
+    "latency_s": 0.05,
+    "priority_level": 5,
+    "seed": 1
+  },
+  "named": [
+    {
+      "description": "both reach the stop line at t=1.00",
+      "fcfs": {
+        "completed": true,
+        "first": "car_a",
+        "other_wait": 1.65,
+        "overlaps": 0,
+        "priority_wait": 0.10000000000000009,
+        "total_wait": 1.75
+      },
+      "priority": {
+        "completed": true,
+        "first": "car_a",
+        "other_wait": 1.65,
+        "overlaps": 0,
+        "priority_wait": 0.10000000000000009,
+        "total_wait": 1.75
+      },
+      "priority_vehicle": "car_a",
+      "scenario": "S1a simultaneous, car_a has priority"
+    },
+    {
+      "description": "both reach the stop line at t=1.00",
+      "fcfs": {
+        "completed": true,
+        "first": "car_a",
+        "other_wait": 0.10000000000000009,
+        "overlaps": 0,
+        "priority_wait": 1.65,
+        "total_wait": 1.75
+      },
+      "priority": {
+        "completed": true,
+        "first": "car_b",
+        "other_wait": 1.65,
+        "overlaps": 0,
+        "priority_wait": 0.10000000000000009,
+        "total_wait": 1.75
+      },
+      "priority_vehicle": "car_b",
+      "scenario": "S1b simultaneous, car_b has priority"
+    },
+    {
+      "description": "same arrival, nobody has priority (car_b is 'priority' only for reporting)",
+      "fcfs": {
+        "completed": true,
+        "first": "car_a",
+        "other_wait": 0.10000000000000009,
+        "overlaps": 0,
+        "priority_wait": 1.65,
+        "total_wait": 1.75
+      },
+      "priority": {
+        "completed": true,
+        "first": "car_a",
+        "other_wait": 0.10000000000000009,
+        "overlaps": 0,
+        "priority_wait": 1.65,
+        "total_wait": 1.75
+      },
+      "priority_vehicle": "car_b",
+      "scenario": "S2 equal priority, simultaneous"
+    },
+    {
+      "description": "one-way delay 150 ms: car_b arrives before car_a's request reaches it",
+      "fcfs": {
+        "completed": true,
+        "first": "car_a",
+        "other_wait": 0.30000000000000004,
+        "overlaps": 0,
+        "priority_wait": 1.9000000000000001,
+        "total_wait": 2.2
+      },
+      "priority": {
+        "completed": true,
+        "first": "car_b",
+        "other_wait": 2.0,
+        "overlaps": 0,
+        "priority_wait": 0.30000000000000004,
+        "total_wait": 2.3
+      },
+      "priority_vehicle": "car_b",
+      "scenario": "S3 priority arrives 0.05 s after other, slow link"
+    },
+    {
+      "description": "the other car is already crossing",
+      "fcfs": {
+        "completed": true,
+        "first": "car_a",
+        "other_wait": 0.10000000000000009,
+        "overlaps": 0,
+        "priority_wait": 1.15,
+        "total_wait": 1.25
+      },
+      "priority": {
+        "completed": true,
+        "first": "car_a",
+        "other_wait": 0.10000000000000009,
+        "overlaps": 0,
+        "priority_wait": 1.15,
+        "total_wait": 1.25
+      },
+      "priority_vehicle": "car_b",
+      "scenario": "S4 priority arrives 0.50 s after other"
+    },
+    {
+      "description": "car_b (priority) re-requests immediately after each exit; car_a arrives at t=1.0",
+      "fcfs": {
+        "completed": true,
+        "first": "car_b",
+        "other_wait": 1.15,
+        "overlaps": 0,
+        "priority_wait": 1.7999999999999998,
+        "total_wait": 2.9499999999999997
+      },
+      "priority": {
+        "completed": true,
+        "first": "car_b",
+        "other_wait": 1.15,
+        "overlaps": 0,
+        "priority_wait": 1.7999999999999998,
+        "total_wait": 2.9499999999999997
+      },
+      "priority_vehicle": "car_b",
+      "scenario": "S5 priority car repeats 3 trips"
+    }
+  ],
+  "random_arrivals": {
+    "contested_arrivals": 0.0505,
+    "fcfs": {
+      "other_wait": 0.3697250000000096,
+      "priority_first": 0.5135,
+      "priority_wait": 0.36512500000000847,
+      "total_wait": 0.7348500000000096
+    },
+    "latency_s": 0.05,
+    "loss": 0.0,
+    "order_differs": 0.0055,
+    "overlaps": 0,
+    "priority": {
+      "other_wait": 0.3782500000000097,
+      "priority_first": 0.519,
+      "priority_wait": 0.3566000000000083,
+      "total_wait": 0.7348500000000096
+    },
+    "trials": 2000,
+    "unfinished": 0,
+    "window_s": 4.0
+  },
+  "random_arrivals_10pct_loss": {
+    "contested_arrivals": 0.05,
+    "fcfs": {
+      "other_wait": 0.3930500000000023,
+      "priority_first": 0.524,
+      "priority_wait": 0.3675000000000011,
+      "total_wait": 0.7605500000000017
+    },
+    "latency_s": 0.05,
+    "loss": 0.1,
+    "order_differs": 0.007,
+    "overlaps": 0,
+    "priority": {
+      "other_wait": 0.4039000000000028,
+      "priority_first": 0.531,
+      "priority_wait": 0.35655000000000076,
+      "total_wait": 0.7604500000000017
+    },
+    "trials": 1000,
+    "unfinished": 0,
+    "window_s": 4.0
+  }
+}

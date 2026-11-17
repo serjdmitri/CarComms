@@ -27,6 +27,7 @@ class Scenario:
     description: str
     trips: Sequence[Trip]
     priority_vehicle: str
+    latency_s: float = LATENCY_S
 
 
 def named_scenarios() -> List[Scenario]:
@@ -40,8 +41,8 @@ def named_scenarios() -> List[Scenario]:
                  [t("car_a", 1.0), t("car_b", 1.0, prio=PRIORITY)], "car_b"),
         Scenario("S2 equal priority, simultaneous", "same arrival, nobody has priority (car_b is 'priority' only for reporting)",
                  [t("car_a", 1.0), t("car_b", 1.0)], "car_b"),
-        Scenario("S3 priority arrives 0.05 s after other", "inside the message-latency window",
-                 [t("car_a", 1.0), t("car_b", 1.05, prio=PRIORITY)], "car_b"),
+        Scenario("S3 priority arrives 0.05 s after other, slow link", "one-way delay 150 ms: car_b arrives before car_a's request reaches it",
+                 [t("car_a", 1.0), t("car_b", 1.05, prio=PRIORITY)], "car_b", latency_s=0.15),
         Scenario("S4 priority arrives 0.50 s after other", "the other car is already crossing",
                  [t("car_a", 1.0), t("car_b", 1.5, prio=PRIORITY)], "car_b"),
         Scenario("S5 priority car repeats 3 trips", "car_b (priority) re-requests immediately after each exit; car_a arrives at t=1.0",
@@ -68,7 +69,7 @@ def run_named(seed: int = 1) -> List[Dict]:
     for sc in named_scenarios():
         row = {"scenario": sc.name, "description": sc.description, "priority_vehicle": sc.priority_vehicle}
         for pol in ("fcfs", "priority"):
-            res = run_simulation(sc.trips, policy=pol, network=_network(seed))
+            res = run_simulation(sc.trips, policy=pol, network=_network(seed, sc.latency_s))
             row[pol] = _summarise(res, sc.priority_vehicle)
         rows.append(row)
     return rows
@@ -109,7 +110,7 @@ def random_arrivals(n: int = 2000, seed: int = 1, window_s: float = 4.0, latency
     return out
 
 
-def latency_sweep(n: int = 1000, seed: int = 1, latencies: Sequence[float] = (0.02, 0.05, 0.1, 0.2)) -> List[Dict]:
+def latency_sweep(n: int = 1000, seed: int = 1, latencies: Sequence[float] = (0.05, 0.1, 0.2, 0.4)) -> List[Dict]:
     return [random_arrivals(n=n, seed=seed, latency=l) for l in latencies]
 
 
@@ -135,6 +136,8 @@ def render_markdown(data: Dict) -> str:
              "No hardware was involved. Waiting time = from reaching the stop line to entering the intersection.")
     L.append("")
     L.append("## Named scenarios (same arrivals for both policies)")
+    L.append("")
+    L.append("The simulator advances in 50 ms steps, so 50 ms is the smallest delay it can represent.")
     L.append("")
     L.append("| Scenario | Policy | Priority car wait (s) | Other car wait (s) | Total wait (s) | Went first |")
     L.append("|---|---|---:|---:|---:|---|")

@@ -48,7 +48,7 @@ def _plot(a: argparse.Namespace) -> int:
     panels = []
     for pol, label in (("fcfs", "First-come-first-served"), ("priority", "Priority-aware")):
         s = sc[a.scenario]
-        panels.append((f"{label}  ({s.name})", run_simulation(s.trips, policy=pol, network=SimNetwork(seed=1, latency_s=0.05))))
+        panels.append((f"{label}  ({s.name})", run_simulation(s.trips, policy=pol, network=SimNetwork(seed=1, latency_s=s.latency_s))))
     svg = timeline_svg(panels, t_max=a.t_max)
     os.makedirs(os.path.dirname(os.path.abspath(a.out)), exist_ok=True)
     with open(a.out, "w", encoding="utf-8") as f:

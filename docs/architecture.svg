@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="470" viewBox="0 0 900 470" role="img" aria-label="Architecture: each car runs the same coordinator; sensors feed a path-clear check; the two cars exchange full state over UDP; motion is log-only.">
+  <style>
+    text{font-family:-apple-system,Segoe UI,Helvetica,Arial,sans-serif;fill:#1f2937}
+    .t{font-size:15px;font-weight:700}.s{font-size:12px;fill:#4b5563}.k{font-size:11px;fill:#6b7280}
+    .box{fill:#fff;stroke:#2563eb;stroke-width:1.6}
+    .hw{fill:#fffbeb;stroke:#d97706;stroke-width:1.6;stroke-dasharray:6 4}
+    .fut{fill:#f9fafb;stroke:#9ca3af;stroke-width:1.4;stroke-dasharray:2 4}
+    .car{fill:#f8fafc;stroke:#cbd5e1;stroke-width:1.2}
+    .arrow{stroke:#374151;stroke-width:1.6;fill:none;marker-end:url(#a)}
+  </style>
+  <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#374151"/></marker></defs>
+  <rect width="900" height="470" rx="14" fill="#ffffff" stroke="#e5e7eb"/>
+
+  <!-- car A -->
+  <rect x="20" y="20" width="360" height="368" rx="12" class="car"/>
+  <text x="38" y="46" class="t">Car A  (same software on every car)</text>
+  <rect x="38" y="62" width="150" height="58" rx="8" class="hw"/>
+  <text x="50" y="84" class="t" style="font-size:13px">HC-SR04 distance</text>
+  <text x="50" y="102" class="s">wiring unverified</text>
+  <rect x="200" y="62" width="164" height="58" rx="8" class="fut"/>
+  <text x="212" y="84" class="t" style="font-size:13px">Camera: stop line</text>
+  <text x="212" y="102" class="s">detector built, not wired in</text>
+  <rect x="38" y="148" width="326" height="52" rx="8" class="box"/>
+  <text x="50" y="170" class="t" style="font-size:13px">Sensor adapter</text>
+  <text x="50" y="188" class="s">ok / no echo / invalid / stale  →  "path clear" or unknown</text>
+  <rect x="38" y="222" width="326" height="86" rx="8" class="box"/>
+  <text x="50" y="244" class="t" style="font-size:13px">Coordinator  (IDLE → REQUESTING → CROSSING)</text>
+  <text x="50" y="264" class="s">enter only while holding the peer's grant</text>
+  <text x="50" y="281" class="s">policy: priority-aware or first-come-first-served</text>
+  <text x="50" y="298" class="s">silence, bad data or a fault  →  hold, never enter</text>
+  <rect x="38" y="326" width="150" height="44" rx="8" class="box"/>
+  <text x="50" y="346" class="t" style="font-size:13px">UDP transport</text>
+  <text x="50" y="362" class="s">20 Hz full-state broadcast</text>
+  <rect x="200" y="326" width="164" height="44" rx="8" class="hw"/>
+  <text x="212" y="346" class="t" style="font-size:13px">Motors: LOG ONLY</text>
+  <text x="212" y="362" class="s">WAIT / PROCEED printed</text>
+  <path class="arrow" d="M113 120 V148"/><path class="arrow" d="M282 120 V135 H220 V148"/>
+  <path class="arrow" d="M201 200 V222"/><path class="arrow" d="M113 308 V326"/><path class="arrow" d="M282 308 V326"/>
+
+  <!-- link -->
+  <path class="arrow" d="M380 348 H520" style="marker-start:url(#a)"/>
+  <text x="450" y="336" class="s" text-anchor="middle">WiFi / UDP</text>
+  <text x="450" y="368" class="k" text-anchor="middle">state, grant, release</text>
+
+  <!-- car B -->
+  <rect x="520" y="20" width="360" height="368" rx="12" class="car"/>
+  <text x="538" y="46" class="t">Car B</text>
+  <rect x="538" y="62" width="150" height="58" rx="8" class="hw"/>
+  <text x="550" y="84" class="t" style="font-size:13px">HC-SR04 distance</text>
+  <text x="550" y="102" class="s">wiring unverified</text>
+  <rect x="700" y="62" width="164" height="58" rx="8" class="fut"/>
+  <text x="712" y="84" class="t" style="font-size:13px">Camera: stop line</text>
+  <text x="712" y="102" class="s">detector built, not wired in</text>
+  <rect x="538" y="148" width="326" height="52" rx="8" class="box"/>
+  <text x="550" y="170" class="t" style="font-size:13px">Sensor adapter</text>
+  <text x="550" y="188" class="s">same rules as car A</text>
+  <rect x="538" y="222" width="326" height="86" rx="8" class="box"/>
+  <text x="550" y="244" class="t" style="font-size:13px">Coordinator</text>
+  <text x="550" y="264" class="s">evaluates the same keys, reaches the same order</text>
+  <text x="550" y="281" class="s">loser grants, winner enters, winner releases</text>
+  <rect x="538" y="326" width="150" height="44" rx="8" class="box"/>
+  <text x="550" y="346" class="t" style="font-size:13px">UDP transport</text>
+  <text x="550" y="362" class="s">20 Hz full-state broadcast</text>
+  <rect x="700" y="326" width="164" height="44" rx="8" class="hw"/>
+  <text x="712" y="346" class="t" style="font-size:13px">Motors: LOG ONLY</text>
+  <text x="712" y="362" class="s">WAIT / PROCEED printed</text>
+  <path class="arrow" d="M613 120 V148"/><path class="arrow" d="M782 120 V135 H720 V148"/>
+  <path class="arrow" d="M701 200 V222"/><path class="arrow" d="M613 308 V326"/><path class="arrow" d="M782 308 V326"/>
+
+  <!-- legend -->
+  <rect x="24" y="410" width="22" height="14" rx="3" class="box"/><text x="54" y="422" class="k">Implemented and tested in software (simulation and local UDP)</text>
+  <rect x="24" y="434" width="22" height="14" rx="3" class="hw"/><text x="54" y="446" class="k">Hardware path: written, not tested on a real car</text>
+  <rect x="460" y="410" width="22" height="14" rx="3" class="fut"/><text x="490" y="422" class="k">Interface only, not yet part of the decision loop</text>
+</svg>
