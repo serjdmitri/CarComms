@@ -1,3 +1,5 @@
+# Raspberry Pi hardware code only (the 'In Progress (Code)' folder).
+# The carcomms/ package, its tests and the simulator need NO third-party packages.
 RPi.GPIO
 picamera2
 smbus2
